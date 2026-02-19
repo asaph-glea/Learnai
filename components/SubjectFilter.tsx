@@ -38,13 +38,13 @@ const SubjectFilter = () => {
 
     return (
         <Select onValueChange={setSubject} value={subject}>
-            <SelectTrigger className="input capitalize">
+            <SelectTrigger className="input h-11 w-full md:w-[180px] capitalize bg-card/50 focus:bg-card">
                 <SelectValue placeholder="Subject" />
             </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="all">All subjects</SelectItem>
+            <SelectContent className="bg-card border-border">
+                <SelectItem value="all" className="cursor-pointer hover:bg-secondary focus:bg-secondary">All subjects</SelectItem>
                 {subjects.map((subject) => (
-                    <SelectItem key={subject} value={subject} className="capitalize">
+                    <SelectItem key={subject} value={subject} className="capitalize cursor-pointer hover:bg-secondary focus:bg-secondary">
                         {subject}
                     </SelectItem>
                 ))}

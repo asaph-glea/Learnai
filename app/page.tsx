@@ -1,43 +1,23 @@
-import React from 'react'
-import CompanionCard from "@/components/CompanionCard";
-import CompanionsList from "@/components/CompanionsList";
-import Cta from "@/components/CTA";
-import {recentSessions} from "@/constants";
-import {getAllCompanions, getRecentSessions} from "@/lib/actions/companion.actions";
-import {getSubjectColor} from "@/lib/utils";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Converso - Real-time AI Teaching Platform",
+  description: "Create and chat with AI companions to learn any subject.",
+};
+
+
+import { auth } from "@clerk/nextjs/server";
+import Dashboard from "@/components/Dashboard";
+import LandingPage from "@/components/LandingPage";
 
 const Page = async () => {
+  const { userId } = await auth();
 
-    const companions = await getAllCompanions({limit: 3});
+  if (userId) {
+    return <Dashboard />;
+  }
 
-    const recentSessionCompanions = await getRecentSessions(10);
-
-
-  return (
-      <main>
-        <h1 className="text-2xl">Popular Companions</h1>
-          <section className="home-section">
-              {companions.map((companion) => (
-                  <CompanionCard
-                      key = {companion.id}
-                      { ... companion}
-                      color = {getSubjectColor(companion.subject)}
-                  />
-              ))}
-
-          </section>
-
-        <section className="home-section">
-            <CompanionsList
-            title = "Recently Completed Sessions"
-            companions = {recentSessionCompanions}
-            classNames = "w-2/3 max-lg:w-full"
-            />
-            <Cta/>
-        </section>
-      </main>
-
-  )
+  return <LandingPage />;
 }
 
 export default Page
