@@ -1,0 +1,4 @@
+components/mode-toggle.tsx(13,8): error TS2307: Cannot find module '@/components/ui/dropdown-menu' or its corresponding type declarations.
+components/theme-provider.tsx(5,41): error TS2307: Cannot find module 'next-themes/dist/types' or its corresponding type declarations.
+lib/utils.ts(59,5): error TS2322: Type 'never[]' is not assignable to type '"conversation-update" | "function-call" | "function-call-result" | "hang" | "language-changed" | "metadata" | "model-output" | "speech-update" | "status-update" | "transcript" | ... 7 more ... | undefined'.
+lib/utils.ts(60,5): error TS2322: Type 'never[]' is not assignable to type '"conversation-update" | "function-call" | "hang" | "language-changed" | "model-output" | "speech-update" | "status-update" | "transcript" | "tool-calls" | "transfer-update" | ... 13 more ... | undefined'.

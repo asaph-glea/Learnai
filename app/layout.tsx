@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/theme-provider"
 import {
   ClerkProvider,
   SignedIn,
@@ -28,13 +30,21 @@ export default function RootLayout({
 }>) {
   return (
 
-      <html lang="en">
-        <body className={`${bricolage.variable} antialiased`}>
-          <ClerkProvider appearance={{variables: {colorPrimary:'#fe5933'} }}>
+    <html lang="en">
+      <body className={`${bricolage.variable} antialiased`}>
+        <ClerkProvider appearance={{ variables: { colorPrimary: '#fe5933' } }}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <Navbar />
             {children}
-          </ClerkProvider>
-        </body>
-      </html>
+            <Toaster />
+          </ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

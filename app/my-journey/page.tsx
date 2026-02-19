@@ -5,82 +5,105 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import {currentUser} from "@clerk/nextjs/server";
-import {redirect} from "next/navigation";
-import {getUserCompanions, getUserSessions} from "@/lib/actions/companion.actions";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { getUserCompanions, getUserSessions } from "@/lib/actions/companion.actions";
 import Image from "next/image";
 import CompanionsList from "@/components/CompanionsList";
-const Profile = async() => {
+const Profile = async () => {
 
     const user = await currentUser();
 
-    if(!user) redirect('/sign-in');
+    if (!user) redirect('/sign-in');
 
     const companions = await getUserCompanions(user.id);
     const sessionHistory = await getUserSessions(user.id);
+
     return (
-        <main className="min-lg:w-3/4">
-            <section className="flex justify-between gap-4 max-sm:flex-col items-center">
-                <div className="flex gap-4 items-center">
-                    <Image
-                        src={user.imageUrl}
-                        alt={user.firstName!}
-                        width={110}
-                        height={110}
-                    />
-                    <div className="flex flex-col gap-2">
-                        <h1 className="font-bold text-2xl">
+        <main className="w-full max-w-7xl mx-auto p-6 md:p-10 space-y-10">
+            {/* Header Section */}
+            <section className="flex flex-col md:flex-row justify-between items-center gap-8 p-8 rounded-3xl bg-secondary/20 border border-border shadow-sm">
+                <div className="flex flex-col md:flex-row gap-6 items-center text-center md:text-left">
+                    <div className="relative group">
+                        <div className="absolute -inset-1 rounded-full bg-cta-gold opacity-20 blur-md group-hover:opacity-40 transition-opacity" />
+                        <Image
+                            src={user.imageUrl}
+                            alt={user.firstName!}
+                            width={120}
+                            height={120}
+                            className="rounded-full border-4 border-background relative z-10 shadow-lg"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <h1 className="font-bold text-3xl md:text-4xl text-foreground">
                             {user.firstName} {user.lastName}
                         </h1>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground font-medium">
                             {user.emailAddresses[0].emailAddress}
                         </p>
+                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cta-gold/10 border border-cta-gold/20 text-cta-gold text-sm font-bold w-fit mx-auto md:mx-0">
+                            Learner
+                        </div>
                     </div>
                 </div>
-                <div className="flex gap-4">
-                    <div className="border border-black rounded-lg p-6 gap-2 flex flex-col h-fit">
-                        <div className="flex gap-2 items-center">
-                            <Image
-                                src="/icons/check.svg"
-                                alt="checkmark"
-                                width={22}
-                                height={22}
-                            />
-                            <p className="text-2xl font-bold">{sessionHistory.length}</p>
+
+                {/* Stats Cards */}
+                <div className="flex gap-4 md:gap-6 w-full md:w-auto">
+                    <div className="flex-1 md:flex-initial flex flex-col items-center justify-center p-6 rounded-2xl bg-card border border-border shadow-sm min-w-[140px] hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-2 mb-1">
+                            {/* Icon placeholder or use Lucide if imported */}
+                            <p className="text-3xl font-bold">{sessionHistory.length}</p>
                         </div>
-                        <div>Lessons completed</div>
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center">Lessons Completed</span>
                     </div>
-                    <div className="border border-black rounded-lg p-6 gap-2 flex flex-col h-fit">
-                        <div className="flex gap-2 items-center">
-                            <Image src="/icons/cap.svg" alt="cap" width={22} height={22} />
-                            <p className="text-2xl font-bold">{companions.length}</p>
+                    <div className="flex-1 md:flex-initial flex flex-col items-center justify-center p-6 rounded-2xl bg-card border border-border shadow-sm min-w-[140px] hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-2 mb-1">
+                            <p className="text-3xl font-bold">{companions.length}</p>
                         </div>
-                        <div>Companions created</div>
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center">Companions Created</span>
                     </div>
                 </div>
             </section>
-            <Accordion type="multiple">
-                <AccordionItem value="recent">
-                    <AccordionTrigger className="text-2xl font-bold p-6">
-                        Recent Sessions
-                    </AccordionTrigger>
-                    <AccordionContent>
-                        <CompanionsList
-                            title="Recent Sessions"
-                            companions={sessionHistory}
-                        />
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="companions">
-                    <AccordionTrigger className="text-2xl font-bold p-6">
-                        My Companions {`(${companions.length})`}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                        <CompanionsList title="My Companions" companions={companions} />
-                    </AccordionContent>
-                </AccordionItem>
-            </Accordion>
 
+            {/* Content Section */}
+            <div className="space-y-6">
+                <Accordion type="multiple" defaultValue={["recent", "companions"]} className="w-full space-y-4">
+                    <AccordionItem value="recent" className="border-none">
+                        <AccordionTrigger className="text-xl md:text-2xl font-bold px-6 py-4 rounded-2xl hover:bg-secondary/30 transition-colors [&[data-state=open]]:bg-secondary/20 [&[data-state=open]]:rounded-b-none">
+                            Recent Sessions
+                        </AccordionTrigger>
+                        <AccordionContent className="p-0 pt-4">
+                            <div className="p-1">
+                                <CompanionsList
+                                    title=""
+                                    companions={sessionHistory}
+                                />
+                                {sessionHistory.length === 0 && (
+                                    <div className="text-center py-10 text-muted-foreground">
+                                        No active sessions yet. Start learning!
+                                    </div>
+                                )}
+                            </div>
+                        </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="companions" className="border-none">
+                        <AccordionTrigger className="text-xl md:text-2xl font-bold px-6 py-4 rounded-2xl hover:bg-secondary/30 transition-colors [&[data-state=open]]:bg-secondary/20 [&[data-state=open]]:rounded-b-none">
+                            My Companions {`(${companions.length})`}
+                        </AccordionTrigger>
+                        <AccordionContent className="p-0 pt-4">
+                            <div className="p-1">
+                                <CompanionsList title="" companions={companions} />
+                                {companions.length === 0 && (
+                                    <div className="text-center py-10 text-muted-foreground">
+                                        You haven't created any companions yet.
+                                    </div>
+                                )}
+                            </div>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </div>
         </main>
     );
 };
